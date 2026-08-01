@@ -11,6 +11,11 @@ namespace CustomSkillsAPI
         public static event Action AddProgressionSlots = () => { };
         public static event Action AddInherits = () => { };
 
+        public override void OnInitializeMelon()
+        {
+            LoggerInstance.Msg("Initialized.");
+        }
+
         public override void OnLateInitializeMelon()
         {
             SetUpProgressionSlots.Invoke();
