@@ -9,9 +9,11 @@ namespace CustomSkillsAPI
 {
     public class Core : MelonMod
     {
+        public static event Action PreSetUpProgressionSlots = () => { };
         public static event Action SetUpProgressionSlots = () => { };
-        public static event Action AddProgressionSlots = () => { };
-        public static event Action AddInherits = () => { };
+        public static event Action PostSetUpProgressionSlots = () => { };
+        public static event Action PostAddProgressionSlots = () => { };
+        public static event Action PostAddInherits = () => { };
 
         public static List<ProgressionSlot> progressionSlots = [];
 
@@ -22,7 +24,11 @@ namespace CustomSkillsAPI
 
         public override void OnLateInitializeMelon()
         {
+            PreSetUpProgressionSlots.Invoke();
+
             SetUpProgressionSlots.Invoke();
+
+            PostSetUpProgressionSlots.Invoke();
 
             foreach (ProgressionSlot progressionSlot in progressionSlots)
             {
@@ -33,10 +39,14 @@ namespace CustomSkillsAPI
                 professionSkillTree.Slots.Add(progressionSlot);
             }
 
+            PostAddProgressionSlots.Invoke();
+
             foreach (ProgressionSlot progressionSlot in progressionSlots)
             {
                 progressionSlot.AddInherit(ProfessionSkillTree.GetProfessionTree(progressionSlot.Path));
             }
+
+            PostAddInherits.Invoke();
         }
 
         public static void RegisterProfessionSkill(ProfessionSkill professionSkill)
